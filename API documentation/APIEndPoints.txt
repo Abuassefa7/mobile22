@@ -1,0 +1,722 @@
+   - APIs design
+
+      ** The common practice is to prepare an api documentation before starting to work on the backend. There is usually one common place to put the documentation in a way it is easily accessible to all the developers working on the project. 
+     
+      - We now have to think of all the API endpoints that we need to implement for each Microservice. 
+      
+        ** - Employees 
+          GET All
+            Query: 
+              limit  
+          For: 
+            List of Employees page 
+
+          Get Employees
+          ------------- 
+            request
+            GET /api/employees HTTP/1.1
+            Host: localhost:8080 
+            
+            response
+            HTTP/1.1 200 OK
+            Content-Type: application/json
+            {
+             "status": "success",
+              "contacts":
+              [
+                {
+                  "employee_id": 1,
+                  "employee_email": "test@test.com",
+                  "employee_first_name": "Test",
+                  "employee_last_name": "Test",
+                  "employee_phone": "555-555-5555",
+                  "active_employee": 1,
+                  "company_role_name":"admin"
+                  "added_date": "2016-11-28T14:10:11.338Z"
+                },
+                {},
+                ...
+              ]
+            }
+
+          ------------- 
+
+        ** - Single Employee 
+          GET by ID 
+          POST New Employee
+          PUT by ID (FORM)  
+
+          For: 
+            Add new Employee page (FORM)  
+            Edit Employee page
+            Logged in user header
+
+          NOTE: Add active flag  (Only active employees can log in)
+
+          Get Single Employee
+          -------------------- 
+            request
+            GET /api/employee/:id HTTP/1.1
+            Host: localhost:8080 
+
+            response
+            HTTP/1.1 200 OK
+            Content-Type: application/json
+            {           
+               "status": "success",
+               "data" : {
+              "employee_id": 1,
+              "employee_email": "test@test.com",
+              "employee_first_name": "Test",
+              "employee_last_name": "Test",
+              "employee_phone": "555-555-5555",
+              "active_employee": 1,
+              "company_role_name":"admin"
+              "added_date": "2016-11-28T14:10:11.338Z"
+            }
+
+            }
+           
+          --------------------
+
+          Add New Employee
+          ----------------- 
+            request
+            POST /api/employee HTTP/1.1
+            Content-Type: application/json 
+            Host: localhost:8080 
+            {
+              "employee_email": "test@test.com",
+              "employee_first_name": "Test",
+              "employee_last_name": "Test",
+              "employee_username":"test",
+              "employee_phone": "555-555-5555",
+              "active_employee": 1,
+              "company_role_id":1,
+              "employee_password": "8HYsy&^uud*7hh", 
+            }
+
+            response
+            HTTP/1.1 200 OK
+            Content-Type: application/json
+            {
+              "success":"true"
+            }
+          -----------------
+
+          Update Employee
+          ---------------  
+            request
+            PUT /api/employee/:id HTTP/1.1
+            Content-Type: application/json 
+            Host: localhost:8080 
+            {
+              "employee_first_name": "Test",
+              "employee_last_name": "Test",
+              "employee_phone": "555-555-5555",
+              "active_employee": 1,
+              "company_role_id":2
+            }
+
+            response
+            HTTP/1.1 200 OK
+            Content-Type: application/json
+            {
+              "success":"true"
+            }
+          -----------------
+        
+        ** - Services 
+          GET All
+          For: 
+            Display services on order creation page 
+              - Only active services show up  
+
+
+          Get All Services
+          ---------------- 
+            request
+            GET /api/services HTTP/1.1
+            Host: localhost:8080 
+
+            response
+            HTTP/1.1 200 OK
+            Content-Type: application/json
+            {
+              {
+                "service_id": 1,
+                "repair_service_name": "Oil change",
+                "repair_service_description": "Some description about the oil change"
+              },
+              {},
+              ...
+            }
+          ---------------- 
+
+        ** Single service 
+          GET by id 
+          POST - New service 
+          PUT - Edit service
+          DELETE a service (Not advisable as it could have been provided in the past) 
+            - Just add a flag that says active service or non active service *
+
+          For: 
+            Add new service (FORM) 
+            Edit service 
+
+          NOTE: Add active flag (Only active services show up on new order page) 
+
+          Get Single Service
+          ------------------ 
+            request
+            GET /api/service/:id HTTP/1.1
+            Host: localhost:8080 
+
+            response
+            HTTP/1.1 200 OK
+            Content-Type: application/json
+            {
+              "service_id": 1,
+              "repair_service_name": "screen change",
+              "repair_service_description": "Some description about the service"
+            }
+          ------------------
+
+          Add New Service
+          ---------------
+            request
+            POST /api/service HTTP/1.1
+            Content-Type: application/json 
+            Host: localhost:8080 
+            {
+              "repair_service_name": "screen change",
+              "repair_service_description": "Some description about the service"
+            }
+
+            response
+            HTTP/1.1 200 OK
+            Content-Type: application/json
+            {
+              "success":"true"
+            }
+          ---------------
+
+          Update Service
+          ---------------  
+            request
+            PUT /api/service/:id HTTP/1.1
+            Content-Type: application/json 
+            Host: localhost:8080 
+            {
+              "repair_service_name": "screen change",
+              "repair_service_description": "Some description about the service"
+            }
+
+            response
+            HTTP/1.1 200 OK
+            Content-Type: application/json
+            {
+              "success":"true"
+            }
+          ---------------
+
+      For special services
+      ----------------------------------
+
+      Add New Service for ria rate
+          ---------------
+            request
+            POST /api/rate HTTP/1.1
+            Content-Type: application/json 
+            Host: localhost:8080 
+            {
+              "rate_service_name": "currency change",
+              "rate_value": 120
+            }
+              response
+            HTTP/1.1 200 OK
+            Content-Type: application/json
+            {
+              "success":"true"
+            }
+             
+             Get  all Service
+          --------------------
+            request
+            GET/api/rates HTTP/1.1
+            Content-Type: application/json 
+            Host: localhost:8080 
+           
+         response
+            HTTP/1.1 200 OK
+            Content-Type: application/json
+            [
+              {
+                "rate_service_id": 1,
+                 "rate_service_name": "currency change",
+                 "rate_value": 120
+              },
+              {},
+              ...
+            ]
+
+
+            request
+            PUT /api/rate/:id HTTP/1.1
+            Content-Type: application/json 
+            Host: localhost:8080 
+            {
+              "rate_service_name": "currency change",
+              "rate_value": 120
+            }
+            
+               response
+            HTTP/1.1 200 OK
+            Content-Type: application/json
+            {
+              "success":"true"
+            }
+
+  
+       Add New Service for rent
+          ---------------
+            request
+            POST /api/rent HTTP/1.1
+            Content-Type: application/json 
+            Host: localhost:8080 
+            {
+              " rent_service_name": "basement rentals",
+              "owner_phoneNumber": "123-123-1234"
+              "rent_service_description": " somthing about rent service "
+            }
+              response
+            HTTP/1.1 200 OK
+            Content-Type: application/json
+            {
+              "success":"true"
+            }
+             
+             Get  all Service
+          --------------------
+            request
+            GET/api/rents HTTP/1.1
+            Content-Type: application/json 
+            Host: localhost:8080 
+           
+         response
+            HTTP/1.1 200 OK
+            Content-Type: application/json
+            [
+              {
+              " rent_service_id": 1,
+              " rent_service_name": "basement rentals",
+              "owner_phoneNumber": "123-123-1234"
+              "rent_service_description": " somthing about rent service "
+              },
+              {},
+              ...
+            ]
+    update the service
+    ---------------------
+          request
+            PUT /api/rent/:id HTTP/1.1
+            Content-Type: application/json 
+            Host: localhost:8080 
+            {
+              " rent_service_name": "basement rentals",
+              "owner_phoneNumber": "123-123-1234"
+              "rent_service_description": " somthing about rent service "
+            }
+
+               response
+            HTTP/1.1 200 OK
+            Content-Type: application/json
+            {
+              "success":"true"
+            }
+       Delete service  
+       ---------------------------   
+          request
+            DELETE/api/rent/:id HTTP/1.1
+            Content-Type: application/json 
+            Host: localhost:8080 
+        
+               response
+            HTTP/1.1 200 OK
+            Content-Type: application/json
+            {
+              "success":"true"
+            }
+
+
+        ** - Customers 
+          GET All 
+          Query: 
+            limit 
+            sortby 
+
+          For: List of customers page 
+      
+          Get Customers
+          ------------- 
+            request
+            GET /api/customers HTTP/1.1
+            Host: localhost:8080 
+            
+            response
+            HTTP/1.1 200 OK
+            Content-Type: application/json
+            {
+              "customers":
+              [
+                {
+                  "customer_id": 1,
+                  "customer_email": "test@test.com",
+                  "customer_phone_number": "555-555-5555",
+                  "customer_first_name": "Test",
+                  "customer_last_name": "Test",
+                  "customer_hash": "khsdgfkujhkjnfdfg7763hdff",
+                  "active_customer_status": 1,
+                  "customer_added_date": "2016-11-28T14:10:11.338Z"
+                },
+                {},
+                ...
+              ]
+            }
+          ------------- 
+
+        ** - Single customer 
+          GET by ID  
+          POST New customer 
+          PUT by ID  
+
+          For: 
+            Create new customer 
+            Customer page (Shows orders at the bottom) 
+
+          Get Single Customer
+          -------------------- 
+            request
+            GET /api/customer/:id HTTP/1.1
+            Host: localhost:8080 
+
+            response
+            HTTP/1.1 200 OK
+            Content-Type: application/json
+            {
+              "customer_id": 1,
+              "customer_email": "test@test.com",
+              "customer_phone_number": "555-555-5555",
+              "customer_first_name": "Test",
+              "customer_last_name": "Test",
+              "customer_hash": "khsdgfkujhkjnfdfg7763hdff",
+              "active_customer_status": 1,
+              "customer_added_date": "2016-11-28T14:10:11.338Z"
+            }
+          --------------------
+
+          Add New Customer
+          ----------------- 
+            request
+            POST /api/customer HTTP/1.1
+            Content-Type: application/json 
+            Host: localhost:8080 
+            {
+              "customer_email": "test@test.com",
+              "customer_phone_number": "555-555-5555",
+              "customer_first_name": "Test",
+              "customer_last_name": "Test",
+              "customer_hash": "khsdgfkujhkjnfdfg7763hdff",
+              "active_customer_status": 1,
+              "customer_added_date": "2016-11-28T14:10:11.338Z"
+            }
+
+            response
+            HTTP/1.1 200 OK
+            Content-Type: application/json
+            {
+              "success":"true"
+            }
+          -----------------
+
+          Update Customer
+          ---------------  
+            request
+            PUT /api/customer/:id HTTP/1.1
+            Content-Type: application/json 
+            Host: localhost:8080 
+            {
+              "customer_phone_number": "555-555-5555",
+              "customer_first_name": "Test",
+              "customer_last_name": "Test",
+              "active_customer_status": 1,
+            }
+
+            response
+            HTTP/1.1 200 OK
+            Content-Type: application/json
+            {
+              "success":"true"
+            }
+          -----------------
+
+        ** - Orders 
+          GET All 
+          Query: 
+            limit 
+            sortby  
+            filter by completed 
+
+          For: 
+            - List of all orders to work on sorted by order date 
+
+          Get All Orders
+          ---------------- 
+            request
+            GET /api/orders HTTP/1.1
+            Host: localhost:8080 
+
+            response
+            HTTP/1.1 200 OK
+            Content-Type: application/json
+            {
+              {
+                "order_id": 1,
+                "employee_id": 1,
+                "customer_id": 1,
+                "device_id": 1,
+                "order_description": "Some description about the order",
+                "order_date": "2016-11-28T14:10:11.338Z"
+                "estimated_completion_date": "2016-11-28T14:10:11.338Z"
+                "completion_date": "",
+                "order_completed": 0,
+                "order_services": [
+                  {
+                    "order_service_id": 1,
+                    "order_id": 1,
+                    "service_id": 1,
+                  },
+                  {},
+                  ...
+               ]
+              },
+              {},
+              ...
+            }
+          ---------------- 
+
+        ** - Single Order 
+          GET by ID 
+          POST New Order
+          PUT Update order 
+
+          For: 
+            Create new order 
+            Modify order  
+            Order status page 
+
+          Get Single Order
+          -------------------- 
+            request
+            GET /api/order/:order-hash HTTP/1.1
+            Host: localhost:8080 
+
+            response
+            HTTP/1.1 200 OK
+            Content-Type: application/json
+            {
+              "order_id": 1,
+              "employee_id": 1,
+              "customer_id": 1,
+              "device_id": 1,
+              "order_description": "Some description about the order",
+              "order_date": "2016-11-28T14:10:11.338Z"
+              "estimated_completion_date": "2016-11-28T14:10:11.338Z"
+              "order_number":"123345"
+              "completion_date": "",
+              "order_completed": 0,
+              "order_services": [
+                {
+                 
+                  "service_id": 1,
+                },
+                { "service_id": 2,},
+                ...
+              ]
+            }
+          --------------------
+
+          Add New Order
+          ----------------- 
+            request
+            POST /api/order HTTP/1.1
+            Content-Type: application/json 
+            Host: localhost:8080 
+            {
+              "employee_id": 1,
+              "customer_id": 1,
+              "device_id": 1,
+              "order_description": "Some description about the order",
+              "order_date": "2016-11-28T14:10:11.338Z"
+              "estimated_completion_date": "2016-11-28T14:10:11.338Z"
+              "completion_date": "",
+              "order_completed": 0,
+              "order_services": [
+                {
+                  "order_id": 1,
+                  "service_id": 1,
+                  "service_completed":1
+                },
+                {},
+                ...
+              ]
+            }
+
+            response
+            HTTP/1.1 200 OK
+            Content-Type: application/json
+            {
+              "success":"true"
+            }
+          -----------------
+
+          Update Order
+          ---------------  
+            request
+            PUT /api/order/:id HTTP/1.1
+            Content-Type: application/json 
+            Host: localhost:8080 
+            {
+              "order_id": 1,
+              "order_description": "Some description about the order",
+              "estimated_completion_date": "2016-11-28T14:10:11.338Z"
+              "completion_date": "",
+              "order_completed": 0,
+              "order_services": {
+                {
+                  "order_service_id": 1,
+                  "order_id": 1,
+                  "service_id": 1,
+                },
+                {},
+                ...
+              }
+            }
+
+            response
+            HTTP/1.1 200 OK
+            Content-Type: application/json
+            {
+              "success":"true"
+            }
+          -----------------
+  ** - devices
+        ** Single single device
+          GET by id  
+          POST New device
+          PUT by id 
+
+          For: 
+            Adding new device
+            Updating device info 
+            
+          Get Single Device
+          ------------------ 
+            request
+            GET /api/device/:id HTTP/1.1
+            Host: localhost:8080 
+
+            response
+            HTTP/1.1 200 OK
+         Content-Type: application/json
+          {
+           "status": "success",
+         "data": {
+             "device_id": 1,
+              "customer_id": 1,
+              "device_make":"Samsung"
+              "device_model": "galaxy S24 Ultra",
+              "device_type": "phone",
+              "device_serial_number": "458008887783543435553434",
+            "device_color": "Silver"
+             }
+}
+          --------------------
+
+          Add New Device
+          ---------------
+            request
+            POST /api/device HTTP/1.1
+            Content-Type: application/json 
+            Host: localhost:8080 
+            {
+              "customer_id": 1,
+              "device_make":"Samsung"
+              "device_model": "galaxy S24 Ultra",
+              "device_type": "phone",
+              "device_serial_number": "458008887783543435553434",
+              "device_color": "Silver"
+            }
+
+            response
+            HTTP/1.1 200 OK
+            Content-Type: application/json
+            {
+              "success":"true"
+            }
+          -----------------
+
+          Update Device
+          ---------------  
+            request
+            PUT /api/device/:id HTTP/1.1
+            Content-Type: application/json 
+            Host: localhost:8080 
+            {
+              "device_make":"Samsung"
+              "device_model": "galaxy S24 Ultra",
+              "device_type": "phone",
+              "device_serial_number": "458008887783543435553434",
+              "device_color": "Silver"
+            }
+
+            response
+            HTTP/1.1 200 OK
+            Content-Type: application/json
+            {
+              "success":"true"
+            }
+          -----------------
+
+        ** - Device Per Customer  
+          GET by customer ID 
+
+          For: 
+            To display on customer page 
+            List of Devices page  
+              - To filter by model and make  
+
+          Get Device Per Customer  
+          ------------------------- 
+            request
+            GET /api/devices/:customer_id HTTP/1.1
+            Host: localhost:8080 
+
+            response
+            HTTP/1.1 200 OK
+            Content-Type: application/json
+            {
+              "customer_id": 1,
+              {
+              "device_id": 1,
+              "device_make":"Samsung"
+              "device_model": "galaxy S24 Ultra",
+              "device_type": "phone",
+              "device_serial_number": "458008887783543435553434",
+              "device_color": "Silver"
+              },
+              {},
+              ...
+            }
+            
+          --------------------

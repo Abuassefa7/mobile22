@@ -1,0 +1,45 @@
+// Import React, the useState and useEffect hooks
+import React, { useState, useEffect } from "react";
+// Import the Route and Navigate components
+import { Navigate } from "react-router";
+// Import the Util function we created to handle the reading from the local storage
+import getAuth from "../../../util/auth";
+
+const PrivateAuthRoute = ({ roles, children }) => {
+	const [isChecked, setIsChecked] = useState(false);
+	const [isLogged, setIsLogged] = useState(false);
+	const [isAuthorized, setIsAuthorized] = useState(false);
+
+	useEffect(() => {
+		// Retrieve the logged in user from local storage
+		const loggedInEmployee = getAuth();
+		loggedInEmployee.then((response) => {
+			const currentTime = Math.floor(Date.now() / 1000);
+			if (response.token_life_time > currentTime) {
+				// If in here, that means the user is logged in
+				setIsLogged(true);
+				if (
+					roles &&
+					roles.length > 0 &&
+					roles.includes(response.employee_role)
+				) {
+					// If in here, that means the user is logged and has  authorization to access the route
+					setIsAuthorized(true);
+				}
+			}
+			setIsChecked(true);
+		});
+	}, [roles]);
+	if (isChecked) {
+		if (!isLogged) {
+			return <Navigate to="/admin" />;
+		}
+		if (!isAuthorized) {
+			return <Navigate to="/unauthorized" />;
+		}
+	}
+
+	return children;
+};
+
+export default PrivateAuthRoute;
